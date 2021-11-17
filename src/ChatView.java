@@ -1,5 +1,4 @@
 //Kevin Woolfolk 
-package chat;
 
 //imports
 import java.awt.EventQueue;
@@ -19,6 +18,7 @@ import java.net.MulticastSocket;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.MutableComboBoxModel;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -42,8 +42,13 @@ public class ChatView {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ChatView window = new ChatView();
-					window.frame.setVisible(true);
+					//change value to create more users
+					int user_number = 1;
+					for(int i=0;i<user_number;i++) {
+						ChatView window = new ChatView();
+						window.frame.setVisible(true);
+					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -90,8 +95,7 @@ public class ChatView {
         lblEnterYourUsername.setBounds(108, 60, 167, 23);
         panel.add(lblEnterYourUsername);
         
-      
-        
+     
         
         JButton btnSend = new JButton("Send");
         btnSend.setBounds(293, 216, 89, 23);
@@ -143,6 +147,7 @@ public class ChatView {
 		Thread clientThread = new Thread(client);
 		clientThread.start();
 		
+		
 		//First listener for userName button to set a Username
 		btnNewButton.addActionListener(new ActionListener() {
         	@Override
@@ -160,19 +165,27 @@ public class ChatView {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				//Get DateTime from action to send message
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");  
-				LocalDateTime now = LocalDateTime.now(); 
-				
-				//Add message to user screen
-				String newMessage = userName+"("+dtf.format(now)+")> "+ textField_message.getText();
-				byte[] buffer = newMessage.getBytes(); 
-				DatagramPacket datagram = new DatagramPacket(buffer,buffer.length,group,port); 
-				try {
-					//Send data to socket and users
-					socket.send(datagram);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				} 
+				int messageLen = 1;
+				if( userName == "TEST") {
+					System.out.println("ENTRO");
+					messageLen = 30;
+				}
+				for(int i=0;i<messageLen;i++) {
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");  
+					LocalDateTime now = LocalDateTime.now(); 
+					
+					//Add message to user screen
+					String newMessage = userName+"("+dtf.format(now)+")> "+ textField_message.getText();
+					byte[] buffer = newMessage.getBytes(); 
+					DatagramPacket datagram = new DatagramPacket(buffer,buffer.length,group,port); 
+					try {
+						//Send data to socket and users
+						
+						socket.send(datagram);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} 
+				}
 				
 			    //Reset Textfield
 			    textField_message.setText("");
